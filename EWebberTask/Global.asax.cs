@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EWebberTask.Validation;
+using FluentValidation.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -18,6 +20,11 @@ namespace EWebberTask
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            FluentValidationModelValidatorProvider.Configure(provider =>  
+            {  
+                provider.ValidatorFactory = new ValidatorFactory();  
+            });
+
         }
     }
 }
