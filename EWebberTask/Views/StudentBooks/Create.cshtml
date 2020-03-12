@@ -1,0 +1,157 @@
+﻿@{
+    ViewBag.Title = "Create";
+}
+<!--autocomplete-->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+<h2>Borrow Book</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <label class="control-label col-md-2" for="StudentName">Student Name</label>
+            <input id="StudentName" placeholder="Auto Complete Student Name" name="StudentName" class="form-control" autocomplete="off" />
+            <input type="hidden" id="StudentId" name="StudentId" value="0" />
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="BookName">Book Name</label>
+            <input id="BookName" placeholder="Auto Complete Book Name" name="BookName" class="form-control" autocomplete="off" />
+            <input type="hidden" id="BookId" name="BookId" value="0" />
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="BookName">Retrive Book</label>
+            <input id="retriveId" class="checkbox" type="checkbox" />
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" id="Savebtn" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    <!--autocomplete-->
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/1.28.5/date_fns.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Auto Complete Student Name
+            $("#StudentName").autocomplete({
+                source: function (request, response) {
+
+                    $.ajax({
+                        url: '/api/StudentsBooks/GetStudentsNames',
+                        datatype: "json",
+                        data: {
+                            term: request.term
+                        },
+                        success: function (data) {
+                            response($.map(data, function (val, item) {
+                                return {
+                                    label: val.Name,
+                                    value: val.Name,
+                                    StudentId: val.Id
+                                }
+                            }))
+                        }
+                    })
+                },
+                select: function (event, ui) {
+                    $('#StudentId').val(ui.item.StudentId);
+                }
+            });
+
+            // Auto Complete Book Name
+            $("#BookName").autocomplete({
+                source: function (request, response) {
+
+                    $.ajax({
+                        url: '/api/StudentsBooks/GetBooksNames',
+                        datatype: "json",
+                        data: {
+                            term: request.term
+                        },
+                        success: function (data) {
+                            response($.map(data, function (val, item) {
+                                return {
+                                    label: val.Name,
+                                    value: val.Name,
+                                    BookId: val.Id
+                                }
+                            }))
+                        }
+                    })
+                },
+                select: function (event, ui) {
+                    $('#BookId').val(ui.item.BookId);
+                }
+            });
+
+            // Save Student Borrow Book
+            $("#Savebtn").click(function () {
+                // if Valid Complete Save
+                if (Validate()) {
+                    $.ajax({
+                        url: '/api/StudentsBooks/Save',
+                        type: 'POST',
+                        datatype: "json",
+                        data: {
+                            StudentId: $("#StudentId").val(),
+                            BookId: $("#BookId").val(),
+                            Retrived: $("#retriveId").is(":checked")
+                        },
+                        success: function (data) {
+
+                            console.log(data);
+                            if (data.Success) {
+                                toastr["success"](data.Messages);
+                                // after 2 seconds redirect to index page
+                                setTimeout(function () {
+                                    window.location.href = "/StudentBooks";
+                                }, 2000);
+                            } else {
+                                toastr["warning"](data.Messages);
+                                $('#BookId').val(0);
+                                $('#BookName').val('');
+                            }
+                        },
+                        error: function (err) {
+                            toastr["error"](err);
+                        }
+                    })
+                }
+            })
+        });
+
+        // Vailidate All Input Form
+        function Validate() {
+            _bookId = $("#BookId").val();
+            _studentId = $("#StudentId").val();
+            
+            if (_bookId == 0) {
+                alert("Must Select Book Name");
+                return false;
+            }
+            if (_studentId == 0) {
+                alert("Must Select Student Name");
+                return false;
+            }
+            return true;
+        }
+    </script>
+}
