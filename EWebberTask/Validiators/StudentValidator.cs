@@ -1,12 +1,12 @@
 ﻿using FluentValidation;
-using EWebberTask.ViewModels;
 using System.Linq;
+using EWebberTask.DAL;
 
 namespace EWebberTask.Validation
 {
-    public class StudentVMValidator : AbstractValidator<StudentVM>
+    public class StudentValidator : AbstractValidator<Student>
     {
-        public StudentVMValidator()
+        public StudentValidator()
         {
             // Name Validations
             RuleFor(x => x.Name).NotEmpty().WithMessage("*Required")

@@ -194,9 +194,9 @@
       <DependentUpon>202003112134193_initialDb.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Validiators\AuthorVMValidator.cs" />
-    <Compile Include="Validiators\StudentVMValidator.cs" />
-    <Compile Include="Validiators\BookVMValidator.cs" />
+    <Compile Include="Validiators\AuthorValidator.cs" />
+    <Compile Include="Validiators\StudentValidator.cs" />
+    <Compile Include="Validiators\BookValidator.cs" />
     <Compile Include="Validiators\ValidatorFactory.cs" />
     <Compile Include="ViewModels\BookVM.cs" />
     <Compile Include="Models\Author.cs" />

@@ -13,8 +13,8 @@ namespace EWebberTask.Validation
         static ValidatorFactory()
         {
             validators.Add(typeof(IValidator<Author>), new AuthorValidator());
-            validators.Add(typeof(IValidator<StudentVM>), new StudentVMValidator());
-            validators.Add(typeof(IValidator<BookVM>), new BookVMValidator());
+            validators.Add(typeof(IValidator<Student>), new StudentValidator());
+            validators.Add(typeof(IValidator<Book>), new BookValidator());
         }
 
         public override IValidator CreateInstance(Type validatorType)  
